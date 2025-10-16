@@ -51,8 +51,9 @@ function addingNELHeader() {
 	fetch('https://jsonplaceholder.typicode.com/tdsdododss/dds/ds', {
 
 		headers: {
-			"Report-To": {"group":"network-errors","max_age":2592000,"endpoints":[{"url":"https://r.3gl.net/hawklogserver/91649/re.p"}]},
-            "NEL": {"report_to":"network-errors","max_age":2592000,"success_fraction":0,"failure_fraction":1.0, "include_subdomains": true}
+			Report-To: {"group":"browser-reports","max_age":2592000,"endpoints":[{"url":"https://r.3gl.net/hawklogserver/102576/re.p"}]}
+
+			NEL: {"report_to":"browser-reports","max_age":2592000,"success_fraction":0,"failure_fraction":1.0,"include_subdomains":true}
 		}
 
 	})
