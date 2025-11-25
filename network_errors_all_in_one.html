@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script defer src='https://portalstage.catchpoint.com/jp/102576/latest/InitialLoadScript.js'></script>
+
+<!-- The following code changes the beacon from unload/beforeunload to pageHide -->
+<!-- <script language="javascript" type="text/javascript">
+if (window.RProfiler) {
+    window.RProfiler.usePageHide();
+} else {
+    window.addEventListener('GlimpseLoaded', () => window.RProfiler.usePageHide());
+}
+</script> -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Network Error Simulation</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    .banner {
+      display: none;
+      padding: 10px;
+      margin-top: 15px;
+      background-color: #f44336;
+      color: white;
+      font-weight: bold;
+    }
+    button {
+      margin: 10px 0;
+      padding: 10px;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+  <h2>Network Error Simulation Page</h2>
+  <p>Click a button below to simulate different network errors:</p>
+
+  <!-- Buttons for each error type -->
+  <button id="dnsBtn">Simulate DNS Failure</button><br>
+  <button id="connectBtn">Simulate Connect Failure</button><br>
+  <button id="sslBtn">Simulate SSL Failure</button><br>
+  <button id="statusBtn">Simulate Server Status Error</button>
+
+  <!-- Banner -->
+  <div class="banner" id="banner"></div>
+
+  <script>
+    function showError(message) {
+      var banner = document.getElementById('banner');
+      banner.textContent = message;
+      banner.style.display = 'block';
+    }
+
+    // DNS Failure: Try to load an image from a non-existent domain
+    document.getElementById('dnsBtn').addEventListener('click', function() {
+      var img = new Image();
+      img.src = 'http://nonexistent-domain-xyz123.com/missing.jpg';
+      img.onerror = function() {
+        showError('DNS Failure: Unable to resolve domain.');
+      };
+    });
+
+    // Connect Failure: Try to connect to localhost on a blocked port
+    document.getElementById('connectBtn').addEventListener('click', function() {
+      var xhr = new XMLHttpRequest();
+      xhr.open('GET', 'http://127.0.0.1:81/test', true); // Port 81 likely closed
+      xhr.onerror = function() {
+        showError('Connect Failure: Unable to establish connection.');
+      };
+      xhr.send();
+    });
+
+    // SSL Failure: Attempt to load HTTPS resource with invalid SSL (simulate by using expired.badssl.com)
+    document.getElementById('sslBtn').addEventListener('click', function() {
+      var xhr = new XMLHttpRequest();
+      xhr.open('GET', 'https://expired.badssl.com/', true);
+      xhr.onerror = function() {
+        showError('SSL Failure: Secure connection could not be established.');
+      };
+      xhr.send();
+    });
+
+    // Server Status Error: Request a missing resource to trigger 404
+    document.getElementById('statusBtn').addEventListener('click', function() {
+      var xhr = new XMLHttpRequest();
+      xhr.open('GET', 'missing-resource.jpg', true);
+      xhr.onload = function() {
+        if (xhr.status >= 400) {
+          showError('Server Status Error: HTTP ' + xhr.status);
+        }
+      };
+      xhr.onerror = function() {
+        showError('Server Status Error: Network issue occurred.');
+      };
+      xhr.send();
+    });
+  </script>
+</body>
+</html>
