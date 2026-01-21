@@ -1,51 +1,48 @@
-function logError(type, err) {
-  console.error(`[${type}]`, err);
-}
+/* ============================
+   NETWORK ERROR SIMULATIONS
+   ============================ */
 
-/**
- * DNS error
- */
+/* 1️⃣ DNS Error */
 document.getElementById("dnsBtn").onclick = () => {
-  fetch("https://this-domain-should-not-exist-987654.com/test")
-    .catch(err => logError("DNS ERROR", err));
+  fetch("https://this-domain-should-not-exist-123456789.com")
+    .catch(err => console.error("DNS Error", err));
 };
 
-/**
- * Connection refused error
- */
+/* 2️⃣ Connection Refused (NEL BEST CASE) */
 document.getElementById("connBtn").onclick = () => {
-  fetch("http://127.0.0.1:81/test")
-    .catch(err => logError("CONNECTION ERROR", err));
+  fetch("https://sagniks.netlify.app:444/test")
+    .catch(err => console.error("Connection Error", err));
 };
 
-/**
- * Timeout error
- */
+/* 3️⃣ Timeout Error */
 document.getElementById("timeoutBtn").onclick = () => {
-  fetch("http://10.255.255.1")
-    .catch(err => logError("TIMEOUT ERROR", err));
+  const controller = new AbortController();
+  setTimeout(() => controller.abort(), 300);
+
+  fetch("https://httpstat.us/200?sleep=5000", {
+    signal: controller.signal
+  }).catch(err => console.error("Timeout Error", err));
 };
 
-/**
- * HTTP 404 error (note: fetch resolves, does not reject)
- */
+/* 4️⃣ HTTP 404 Error */
 document.getElementById("httpBtn").onclick = () => {
-  fetch("https://jsonplaceholder.typicode.com/does-not-exist")
-    .then(res => {
-      console.log("HTTP STATUS:", res.status);
-    });
+  fetch("https://sagniks.netlify.app/does-not-exist")
+    .then(r => {
+      if (!r.ok) throw new Error("HTTP " + r.status);
+    })
+    .catch(err => console.error("HTTP Error", err));
 };
 
-/**
- * JavaScript runtime error
- */
+/* ============================
+   JAVASCRIPT ERRORS
+   ============================ */
+
+/* 5️⃣ JS Runtime Error */
 document.getElementById("jsBtn").onclick = () => {
-  throw new Error("Intentional JavaScript runtime error");
+  nonExistentFunction(); // ReferenceError
 };
 
-/**
- * Promise rejection error
- */
+/* 6️⃣ Promise Rejection */
 document.getElementById("promiseBtn").onclick = () => {
-  Promise.reject(new Error("Intentional unhandled promise rejection"));
+  Promise.reject("Unhandled promise rejection");
 };
