@@ -46,3 +46,15 @@ document.getElementById("jsBtn").onclick = () => {
 document.getElementById("promiseBtn").onclick = () => {
   Promise.reject("Unhandled promise rejection");
 };
+
+function trigger5xx(code) {
+  fetch(`/.netlify/functions/error?code=${code}&ts=${Date.now()}`, { cache: "no-store" })
+    .then(r => { if (!r.ok) throw new Error("HTTP " + r.status); })
+    .catch(err => console.error(`HTTP ${code} Error`, err));
+}
+
+document.getElementById("e500").onclick = () => trigger5xx(500);
+document.getElementById("e501").onclick = () => trigger5xx(501);
+document.getElementById("e502").onclick = () => trigger5xx(502);
+document.getElementById("e503").onclick = () => trigger5xx(503);
+document.getElementById("e504").onclick = () => trigger5xx(504);
